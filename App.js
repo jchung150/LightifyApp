@@ -1,20 +1,94 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import IconButton from "./components/UI/IconButton";
+import AllEmotions from "./screens/AllEmotions";
+import ManageEmotion from "./screens/ManageEmotion";
+import About from "./screens/About";
 
-export default function App() {
+import { GlobalStyles } from "./constants/styles";
+
+const Stack = createNativeStackNavigator();
+const Tabs = createBottomTabNavigator();
+
+function EmotionsOverview() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Tabs.Navigator
+      screenOptions={({ navigation }) => ({
+        headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
+        headerTintColor: "white",
+        tabBarStyle: { backgroundColor: GlobalStyles.colors.primary500 },
+        tabBarActiveTintColor: GlobalStyles.colors.accent500,
+        headerRight: ({ tintColor }) => (
+          <IconButton
+            icon="plus"
+            size={24}
+            color={tintColor}
+            onPress={() => {
+              navigation.navigate("ManageEmotion");
+            }}
+          />
+        ),
+      })}
+    >
+      <Tabs.Screen
+        name="AllEmotions"
+        component={AllEmotions}
+        options={{
+          title: "Emotions",
+          tabBarLabel: "Emotions",
+          tabBarIcon: ({ color, size }) => {
+            return (
+              <MaterialIcons name="emoji-emotions" color={color} size={size} />
+            );
+          },
+        }}
+      />
+      <Tabs.Screen
+        name="About"
+        component={About}
+        options={{
+          title: "About",
+          tabBarLabel: "About",
+          tabBarIcon: ({ color, size }) => {
+            return (
+              <FontAwesome6 name="people-group" color={color} size={size} />
+            );
+          },
+        }}
+      />
+    </Tabs.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  return (
+    <>
+      <StatusBar style="auto" />
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
+            headerTintColor: "white",
+          }}
+        >
+          <Stack.Screen
+            name="EmotionsOverview"
+            component={EmotionsOverview}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ManageEmotion"
+            component={ManageEmotion}
+            options={{
+              presentation: "modal",
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </>
+  );
+}
