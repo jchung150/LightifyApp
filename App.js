@@ -4,6 +4,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useEffect } from "react"; // For running database initialization
+import { initializeDatabase } from "./src/database/database";
 import IconButton from "./components/UI/IconButton";
 import AllEmotions from "./screens/AllEmotions";
 import ManageEmotion from "./screens/ManageEmotion";
@@ -65,6 +67,11 @@ function EmotionsOverview() {
 }
 
 export default function App() {
+  // Initialize database when the app loads
+  useEffect(() => {
+    initializeDatabase(); // Ensures the table is created
+  }, []);
+
   return (
     <>
       <StatusBar style="auto" />
