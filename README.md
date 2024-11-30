@@ -34,22 +34,22 @@ The SQLite .db file is created under:
 ```
 Use the path to debug or inspect the database while testing in the simulator.
 
-### Ensure all dependencies are compatible with Expo SDK 52 by running:
+### 6. Ensure all dependencies are compatible with Expo SDK 52 by running:
 ```bash
 npx expo-doctor   
 ```
 
-### Identify and update outdated dependencies:
+### 7. Identify and update outdated dependencies:
 ```bash
 npx expo install --check
 ```
 
-### Identify and Update Problematic Packages
+### 8. Identify and Update Problematic Packages
 ```bash
 npx expo install --check
 ```
 
-### Run the App
+### 9. Run the App
 
 ```bash
 npx expo start
