@@ -1,4 +1,4 @@
-// App.js
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -87,15 +87,21 @@ function EmotionsOverview() {
 export default function App() {
   useEffect(() => {
     console.log("Initializing database...");
-    initializeDatabase();
+    initializeDatabase()
+      .then(() => {
+        console.log("Database initialized successfully");
+      })
+      .catch((error) => {
+        console.error("Failed to initialize database:", error);
+      });
   }, []);
 
   return (
-    <>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar style="auto" />
       <NavigationContainer>
         <EmotionsOverview />
       </NavigationContainer>
-    </>
+    </GestureHandlerRootView>
   );
 }

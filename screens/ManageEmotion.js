@@ -5,7 +5,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Slider from "@react-native-community/slider";
 import Button from "../components/UI/Button";
-import { addEmotion, updateEmotion } from "../src/database/database";
+import { addEmotion, updateEmotion, fetchEmotionById } from "../src/database/database";
 import { useRoute, useNavigation } from "@react-navigation/native"; 
 
 
@@ -23,46 +23,96 @@ export default function ManageEmotion() {
   const route = useRoute(); // Use useRoute to get the route object
   const navigation = useNavigation(); // Use useNavigation if needed
 
-  const editedEmotionId = route.params?.emotionId;
-  const isEditing = editedEmotionId !== undefined && editedEmotionId !== null;
+  const routeParams = route.params || {};
+  const editedEmotionId = routeParams.emotionId;
+  const isEditing = editedEmotionId != null;
 
   const [selectedEmotion, setSelectedEmotion] = useState("happy");
   const [color, setColor] = useState(DEFAULT_CONFIG[selectedEmotion].color);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   console.log("========ManageEmotion========");
-  console.log("Received Params in ManageEmotion:", route.params);
+  console.log("Received Params in :", route.params);
   console.log("Selected Emotion:", selectedEmotion);
   console.log("Emotion ID:", editedEmotionId);
   console.log("isEditing :", isEditing);useNavigation
 
   useEffect(() => {
-    setColor(DEFAULT_CONFIG[selectedEmotion].color); 
-  }, [selectedEmotion]);
+    if (isEditing) {
+      // Fetch the existing emotion data using editedEmotionId
+      loadEmotionData(editedEmotionId);
+    } else {
+      // Initialize with default values for adding a new emotion
+      setSelectedEmotion("happy");
+      setColor(DEFAULT_CONFIG["happy"].color);
+    }
+  }, [isEditing]);
+
+  function parseColorString(colorString) {
+    try {
+      // Extract numbers from the string "rgb(r, g, b)"
+      const match = colorString.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+      if (!match) {
+        throw new Error("Invalid color string format");
+      }
+  
+      // Convert the extracted numbers into an object
+      const [, r, g, b] = match;
+      return {
+        r: parseInt(r, 10),
+        g: parseInt(g, 10),
+        b: parseInt(b, 10),
+      };
+    } catch (error) {
+      console.error("Error parsing color string:", error);
+      return { r: 0, g: 0, b: 0 }; // Default color in case of failure
+    }
+  }
+
+  const loadEmotionData = async (emotionId) => {
+    try {
+      const emotion = await fetchEmotionById(emotionId);
+      console.log("Loaded emotion:", emotion);
+      setSelectedEmotion(emotion.emotion);
+      // Parse the color string back to RGB
+      setColor(parseColorString(emotion.color));
+    } catch (error) {
+      console.error("Failed to load emotion data:", error);
+    }
+  };
 
   // Fix: Define handleColorChange
   const handleColorChange = (component, value) => {
     setColor((prevColor) => ({ ...prevColor, [component]: value }));
   };
 
-  const confirmHandler = () => {
+  const confirmHandler = async () => {
     const colorString = `rgb(${color.r}, ${color.g}, ${color.b})`;
-
+  
     console.log("========confirmHandler========");
     console.log("Navigation Params:", route.params);
     console.log("Selected Emotion:", selectedEmotion);
     console.log("Emotion ID:", editedEmotionId);
     console.log("isEditing :", isEditing);
-
+  
     if (isEditing) {
-      updateEmotion(editedEmotionId, selectedEmotion, colorString, () =>
-        navigation.goBack()
-      );
-    } else {
-      addEmotion(selectedEmotion, colorString, () => {
-        console.log("Emotion added successfully");
+      try {
+        await updateEmotion(editedEmotionId, selectedEmotion, colorString);
+        console.log("Emotion updated successfully");
         navigation.goBack();
-      });
+      } catch (error) {
+        console.error("Error updating emotion:", error);
+      }
+    } else {
+      try {
+        const result = await addEmotion(selectedEmotion, colorString);
+        if (result) {
+          console.log("Emotion added successfully");
+          navigation.goBack();
+        }
+      } catch (error) {
+        console.error("Error adding emotion:", error);
+      }
     }
   };
 

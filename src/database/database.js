@@ -1,55 +1,150 @@
+//database.js
 import * as SQLite from "expo-sqlite";
 
-// Open or create the SQLite database
-const db = SQLite.openDatabaseAsync("emotions.db");
+let db = null;
 
-// Initialize the database with a table
 export async function initializeDatabase() {
-  db = await SQLite.openDatabaseAsync("emotions.db");
+  if (db) {
+    console.log("Database already initialized");
+    return db;
+  }
 
-  await db.execAsync(`
-    PRAGMA journal_mode = WAL;
-    CREATE TABLE IF NOT EXISTS emotions (
-      id INTEGER PRIMARY KEY NOT NULL,
-      emotion TEXT NOT NULL,
-      color INTEGER NOT NULL
-    );
-  `);
+  try {
+    // Use openDatabaseAsync to create or open the database
+    db = await SQLite.openDatabaseAsync("emotions.db");
+    console.log("Database connection established");
 
-  console.log("Database initialized");
+    // Use execAsync to create the table
+    await db.execAsync(`
+      PRAGMA journal_mode = WAL;
+      CREATE TABLE IF NOT EXISTS emotions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        emotion TEXT NOT NULL UNIQUE,
+        color TEXT NOT NULL
+      );
+    `);
+
+    console.log("Table created or already exists");
+    return db;
+  } catch (error) {
+    console.error("Failed to initialize database:", error);
+    throw error;
+  }
 }
 
-// Fetch all emotions
 export async function fetchEmotions() {
-  const rows = await db.getAllAsync("SELECT * FROM emotions");
-  return rows; // Returns an array of objects
+  try {
+    const rows = await db.getAllAsync("SELECT * FROM emotions");
+    console.log("Fetched emotions:", rows);
+    return rows;
+  } catch (error) {
+    console.error("Error fetching emotions:", error);
+    throw error;
+  }
 }
 
-// Add a new emotion
 export async function addEmotion(emotion, color) {
-  const result = await db.runAsync(
-    "INSERT INTO emotions (emotion, color) VALUES (?, ?)",
-    emotion,
-    color
-  );
-  console.log("Added emotion:", result.lastInsertRowId);
+  try {
+    const result = await db.runAsync(
+      "INSERT INTO emotions (emotion, color) VALUES (?, ?)",
+      [emotion, color]
+    );
+    console.log("Added emotion:", result.lastInsertRowId);
+    return result.lastInsertRowId;
+  } catch (error) {
+    console.error("Error adding emotion:", error);
+    throw error;
+  }
 }
 
-// Update an existing emotion
+/*Add an Emoiton Without Duplicate*/
+/*
+export async function addEmotion(emotion, color) {
+  try {
+    if (!db) {
+      console.log("DB not initialized. Initializing...");
+      await initializeDatabase();
+    }
+
+    // Prevent duplicate emotions by using `INSERT OR IGNORE`
+    const result = await db.runAsync(
+      "INSERT OR IGNORE INTO emotions (emotion, color) VALUES (?, ?)",
+      [emotion, color]
+    );
+
+    if (result.changes > 0) {
+      console.log("Added emotion:", result.lastInsertRowId);
+      return result.lastInsertRowId;
+    } else {
+      console.log("Emotion already exists:", emotion);
+      return null; // Emotion already exists
+    }
+  } catch (error) {
+    console.error("Error adding emotion:", error);
+    throw error;
+  }
+}
+*/
+
 export async function updateEmotion(id, emotion, color) {
-  const result = await db.runAsync(
-    "UPDATE emotions SET emotion = ?, color = ? WHERE id = ?",
-    emotion,
-    color,
-    id
-  );
-  console.log("Updated rows:", result.changes);
+  try {
+    const result = await db.runAsync(
+      "UPDATE emotions SET emotion = ?, color = ? WHERE id = ?",
+      [emotion, color, id]
+    );
+    console.log("Updated rows:", result.changes);
+    return result.changes;
+  } catch (error) {
+    console.error("Error updating emotion:", error);
+    throw error;
+  }
 }
 
-// Delete an emotion
 export async function deleteEmotion(id) {
-  const result = await db.runAsync("DELETE FROM emotions WHERE id = ?", id);
-  console.log("Deleted rows:", result.changes);
+  try {
+    if (!db) {
+      console.log("DB not initialized. Initializing...");
+      await initializeDatabase();
+    }
+
+    const result = await db.runAsync(
+      "DELETE FROM emotions WHERE id = ?",
+      [id]
+    );
+
+    if (result.changes > 0) {
+      console.log("Deleted emotion with ID:", id);
+    } else {
+      console.log("No emotion found with ID:", id);
+    }
+  } catch (error) {
+    console.error("Error deleting emotion:", error);
+    throw error;
+  }
+}
+
+export async function fetchEmotionById(id) {
+  try {
+    if (!db) {
+      console.log("DB not initialized. Initializing...");
+      await initializeDatabase();
+    }
+
+    const emotion = await db.getFirstAsync(
+      "SELECT * FROM emotions WHERE id = ?",
+      [id]
+    );
+
+    if (emotion) {
+      console.log("Fetched emotion by ID:", emotion);
+      return emotion;
+    } else {
+      throw new Error("No emotion found with the given ID");
+    }
+  } catch (error) {
+    console.error("Error fetching emotion by ID:", error);
+    throw error;
+  }
 }
 
 export default db;
