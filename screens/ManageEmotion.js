@@ -1,3 +1,4 @@
+// ManageEmotion.js
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -5,6 +6,8 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Slider from "@react-native-community/slider";
 import Button from "../components/UI/Button";
 import { addEmotion, updateEmotion } from "../src/database/database";
+import { useRoute, useNavigation } from "@react-navigation/native"; 
+
 
 const DEFAULT_CONFIG = {
   angry: { color: { r: 255, g: 0, b: 0 }, icon: "angry" },
@@ -16,24 +19,40 @@ const DEFAULT_CONFIG = {
   surprise: { color: { r: 255, g: 255, b: 0 }, icon: "surprise" },
 };
 
-export default function ManageEmotion({ route, navigation }) {
-  const editedEmotionId = route.params?.emotionId;
-  const isEditing = !!editedEmotionId;
+export default function ManageEmotion() {
+  const route = useRoute(); // Use useRoute to get the route object
+  const navigation = useNavigation(); // Use useNavigation if needed
 
-  const [selectedEmotion, setSelectedEmotion] = useState("angry");
+  const editedEmotionId = route.params?.emotionId;
+  const isEditing = editedEmotionId !== undefined && editedEmotionId !== null;
+
+  const [selectedEmotion, setSelectedEmotion] = useState("happy");
   const [color, setColor] = useState(DEFAULT_CONFIG[selectedEmotion].color);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  console.log("========ManageEmotion========");
+  console.log("Received Params in ManageEmotion:", route.params);
+  console.log("Selected Emotion:", selectedEmotion);
+  console.log("Emotion ID:", editedEmotionId);
+  console.log("isEditing :", isEditing);useNavigation
+
   useEffect(() => {
-    setColor(DEFAULT_CONFIG[selectedEmotion].color); // Reset to default when emotion changes
+    setColor(DEFAULT_CONFIG[selectedEmotion].color); 
   }, [selectedEmotion]);
 
+  // Fix: Define handleColorChange
   const handleColorChange = (component, value) => {
     setColor((prevColor) => ({ ...prevColor, [component]: value }));
   };
 
   const confirmHandler = () => {
     const colorString = `rgb(${color.r}, ${color.g}, ${color.b})`;
+
+    console.log("========confirmHandler========");
+    console.log("Navigation Params:", route.params);
+    console.log("Selected Emotion:", selectedEmotion);
+    console.log("Emotion ID:", editedEmotionId);
+    console.log("isEditing :", isEditing);
 
     if (isEditing) {
       updateEmotion(editedEmotionId, selectedEmotion, colorString, () =>
@@ -71,7 +90,12 @@ export default function ManageEmotion({ route, navigation }) {
         style={styles.dropdown}
         dropDownContainerStyle={styles.dropdownContainer}
       />
-      <View style={[styles.colorPreview, { backgroundColor: `rgb(${color.r}, ${color.g}, ${color.b})` }]} />
+      <View
+        style={[
+          styles.colorPreview,
+          { backgroundColor: `rgb(${color.r}, ${color.g}, ${color.b})` },
+        ]}
+      />
       <View style={styles.sliders}>
         <Text>Red: {color.r}</Text>
         <Slider

@@ -1,10 +1,18 @@
+// AllEmotions.js
 import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import EmotionsOutput from "../components/EmotionsOutput/EmotionsOutput";
 import { initializeDatabase, fetchEmotions } from "../src/database/database";
+import { useNavigation } from "@react-navigation/native";
 
 export default function AllEmotions() {
   const [emotions, setEmotions] = useState([]);
+  const navigation = useNavigation();
+
+  const navigateToEdit = (emotionId) => {
+    console.log("Navigating to ManageEmotion with ID:", emotionId);
+    navigation.navigate("ManageEmotion", { emotionId });
+  };
 
   useEffect(() => {
     async function loadEmotions() {
@@ -23,7 +31,7 @@ export default function AllEmotions() {
     );
   }
 
-  return <EmotionsOutput emotions={emotions} />;
+  return <EmotionsOutput emotions={emotions} onEdit={navigateToEdit} />;
 }
 
 const styles = StyleSheet.create({

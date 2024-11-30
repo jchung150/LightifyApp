@@ -4,11 +4,12 @@ import EmotionsList from "./EmotionsList";
 import { StyleSheet } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
 
-export default function EmotionsOutput({ emotions }) {
+export default function EmotionsOutput({ emotions, onEdit }) {
+  console.log("EmotionsOutput: onEdit is", onEdit);
   return (
     <View style={styles.container}>
       <EmotionsHeader />
-      <EmotionsList emotions={emotions} />
+      <EmotionsList emotions={emotions} onEdit={onEdit} />
     </View>
   );
 }
