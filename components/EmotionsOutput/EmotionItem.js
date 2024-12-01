@@ -1,28 +1,43 @@
-import { Pressable, Text, View, StyleSheet } from "react-native";
+import React from 'react';
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { Swipeable } from "react-native-gesture-handler";
 import { GlobalStyles } from "../../constants/styles";
 import { FontAwesome5 } from "@expo/vector-icons";
 
-export default function EmotionItem({ id, emotion, icon, color, onPress }) {
-  return (
-    <Pressable
-      onPress={() => onPress(id)} // Pass emotion ID to the handler
-      style={({ pressed }) => [styles.emotionItem, pressed && styles.pressed]}
+export default function EmotionItem({ id, emotion, icon, color, onPress, onDelete }) {
+  // Render the delete button when swiping
+  const renderRightActions = () => (
+    <TouchableOpacity
+      style={styles.deleteButton}
+      onPress={() => onDelete(id)}
     >
-      <View style={styles.emotionContent}>
-        <FontAwesome5 name={icon} size={24} color={color} style={styles.icon} />
-        <View>
-          <Text style={[styles.textBase, styles.emotion]}>{emotion}</Text>
-          <Text style={styles.textBase}>{color}</Text>
+      <Text style={styles.deleteText}>Delete</Text>
+    </TouchableOpacity>
+  );
+
+  return (
+    <Swipeable renderRightActions={renderRightActions}>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => onPress(id)} // Trigger the edit functionality on press
+        style={styles.emotionItem}
+      >
+        <View style={styles.emotionContent}>
+          <FontAwesome5 name={icon} size={24} color={color} style={styles.icon} />
+          <View>
+            <Text style={[styles.textBase, styles.emotion]}>{emotion}</Text>
+            <Text style={styles.textBase}>{color}</Text>
+          </View>
         </View>
-      </View>
-      {/* Add a color preview box */}
-      <View
-        style={[
-          styles.colorBox,
-          { backgroundColor: color }, // Dynamically set the background color
-        ]}
-      />
-    </Pressable>
+        {/* Add a color preview box */}
+        <View
+          style={[
+            styles.colorBox,
+            { backgroundColor: color }, // Dynamically set the background color
+          ]}
+        />
+      </TouchableOpacity>
+    </Swipeable>
   );
 }
 
@@ -63,7 +78,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: GlobalStyles.colors.primary50,
   },
-  pressed: {
-    opacity: 0.75,
+  deleteButton: {
+    backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
+    width: 80,
+    height: "100%",
+  },
+  deleteText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });

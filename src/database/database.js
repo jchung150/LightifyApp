@@ -34,6 +34,11 @@ export async function initializeDatabase() {
 
 export async function fetchEmotions() {
   try {
+    if (!db) {
+      console.log("Database is not initialized. Initializing now...");
+      await initializeDatabase(); 
+    }
+
     const rows = await db.getAllAsync("SELECT * FROM emotions");
     console.log("Fetched emotions:", rows);
     return rows;
