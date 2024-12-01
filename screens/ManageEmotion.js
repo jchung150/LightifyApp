@@ -1,13 +1,12 @@
 // ManageEmotion.js
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, TextInput } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Slider from "@react-native-community/slider";
 import Button from "../components/UI/Button";
 import { addEmotion, updateEmotion, fetchEmotionById } from "../src/database/database";
 import { useRoute, useNavigation } from "@react-navigation/native"; 
-
 
 const DEFAULT_CONFIG = {
   angry: { color: { r: 255, g: 0, b: 0 }, icon: "angry" },
@@ -28,6 +27,7 @@ export default function ManageEmotion() {
   const isEditing = editedEmotionId != null;
 
   const [selectedEmotion, setSelectedEmotion] = useState("happy");
+  const [customEmotion, setCustomEmotion] = useState("");
   const [color, setColor] = useState(DEFAULT_CONFIG[selectedEmotion].color);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -87,6 +87,8 @@ export default function ManageEmotion() {
   };
 
   const confirmHandler = async () => {
+    // Use customEmotion if it's not empty, otherwise use selectedEmotion
+    const emotionName = customEmotion.trim() || selectedEmotion;
     const colorString = `rgb(${color.r}, ${color.g}, ${color.b})`;
   
     console.log("========confirmHandler========");
@@ -105,7 +107,8 @@ export default function ManageEmotion() {
       }
     } else {
       try {
-        const result = await addEmotion(selectedEmotion, colorString);
+        // Changed this to emotionName, which can be custom or selected
+        const result = await addEmotion(emotionName, colorString);
         if (result) {
           console.log("Emotion added successfully");
           navigation.goBack();
@@ -139,6 +142,12 @@ export default function ManageEmotion() {
         placeholder="Select an emotion"
         style={styles.dropdown}
         dropDownContainerStyle={styles.dropdownContainer}
+      />
+      <TextInput
+        style={styles.textInput}
+        placeholder="Or enter a custom emotion"
+        value={customEmotion}
+        onChangeText={setCustomEmotion}
       />
       <View
         style={[
@@ -204,6 +213,14 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     color: "#333",
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 5,
+    padding: 8,
+    marginVertical: 16,
+    fontSize: 16,
   },
   colorPreview: {
     width: "100%",
