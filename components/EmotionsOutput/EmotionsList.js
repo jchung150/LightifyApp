@@ -1,16 +1,22 @@
+import React from "react";
 import { FlatList } from "react-native";
 import EmotionItem from "./EmotionItem";
 
-function renderEmotionItem(itemData) {
-  return <EmotionItem {...itemData.item} />;
-}
-
-export default function EmotionsList({ emotions }) {
+export default function EmotionsList({ emotions, onEdit, onDelete }) {
   return (
     <FlatList
       data={emotions}
-      renderItem={renderEmotionItem}
-      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => (
+        <EmotionItem
+          id={item.id}
+          emotion={item.emotion}
+          icon={item.icon}
+          color={item.color}
+          onPress={onEdit}
+          onDelete={onDelete}
+        />
+      )}
+      keyExtractor={(item) => item.id.toString()}
     />
   );
 }

@@ -1,14 +1,14 @@
-import { View } from "react-native";
+import React from "react";
+import { View, StyleSheet } from "react-native";
 import EmotionsHeader from "./EmotionsHeader";
 import EmotionsList from "./EmotionsList";
-import { StyleSheet } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
 
-export default function EmotionsOutput({ emotions }) {
+export default function EmotionsOutput({ emotions, onEdit, onDelete }) {
   return (
     <View style={styles.container}>
       <EmotionsHeader />
-      <EmotionsList emotions={emotions} />
+      <EmotionsList emotions={emotions} onEdit={onEdit} onDelete={onDelete} />
     </View>
   );
 }
