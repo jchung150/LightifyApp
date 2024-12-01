@@ -18,7 +18,6 @@ const About = () => {
 
         <Text style={styles.subtitle}>Key Features</Text>
         <Text style={styles.text}>✔️ Emotion tracking with a visual color picker.</Text>
-        <Text style={styles.text}>✔️ Insights based on detected mood.</Text>
         <Text style={styles.text}>✔️ Sleek and intuitive design for daily use.</Text>
         <View style={styles.divider} />
 
