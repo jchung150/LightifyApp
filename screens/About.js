@@ -23,7 +23,7 @@ const About = () => {
         <View style={styles.divider} />
 
         <Text style={styles.subtitle}>Developers</Text>
-        <Text style={styles.text}>👩‍💻 Juan Chung - Student ID</Text>
+        <Text style={styles.text}>👩‍💻 Juan Chung (A01353601)</Text>
         <Text style={styles.text}>👩‍💻 Kyoungran Park - Student ID</Text>
         <Text style={styles.text}>👨‍💻 Arcie Lao - Student ID</Text>
         <Text style={styles.text}>👨‍💻 Davin Leong - Student ID</Text>
