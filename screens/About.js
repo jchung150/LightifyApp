@@ -1,13 +1,13 @@
 import React from 'react';
 import { StyleSheet, View, Text, ScrollView, Image, SafeAreaView } from 'react-native';
-import { GlobalStyles } from '../constants/styles'; // Adjust the path if needed
+import { GlobalStyles } from '../constants/styles'; 
 
 const About = () => {
   return (
     <SafeAreaView style={styles.screen}>
       <ScrollView style={styles.container}>
         <Image
-          source={require('../assets/icon.png')} // Replace with your app logo or relevant image
+          source={require('../assets/icon.png')} 
           style={styles.logo}
         />
         <Text style={styles.title}>About This App</Text>
