@@ -24,9 +24,9 @@ const About = () => {
 
         <Text style={styles.subtitle}>Developers</Text>
         <Text style={styles.text}>👩‍💻 Juan Chung (A01353601)</Text>
-        <Text style={styles.text}>👩‍💻 Kyoungran Park - Student ID</Text>
+        <Text style={styles.text}>👩‍💻 Kyoungran Park (A01331544)</Text>
         <Text style={styles.text}>👨‍💻 Arcie Lao (A01296448)</Text>
-        <Text style={styles.text}>👨‍💻 Davin Leong - Student ID</Text>
+        <Text style={styles.text}>👨‍💻 Davin Leong (A01344186)</Text>
         <Text style={styles.text}>👨‍💻 Riz Nur Saidy (A00874466)</Text>
         <View style={styles.divider} />
 
