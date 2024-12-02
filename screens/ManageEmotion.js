@@ -28,12 +28,13 @@ export default function ManageEmotion() {
 
   const [selectedEmotion, setSelectedEmotion] = useState("happy");
   const [customEmotion, setCustomEmotion] = useState("");
-  const [color, setColor] = useState(DEFAULT_CONFIG[selectedEmotion].color);
+  const [color, setColor] = useState(DEFAULT_CONFIG["happy"].color);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   console.log("========ManageEmotion========");
   console.log("Received Params in :", route.params);
   console.log("Selected Emotion:", selectedEmotion);
+  console.log("Color", color);
   console.log("Emotion ID:", editedEmotionId);
   console.log("isEditing :", isEditing);useNavigation
 
@@ -47,6 +48,12 @@ export default function ManageEmotion() {
       setColor(DEFAULT_CONFIG["happy"].color);
     }
   }, [isEditing]);
+
+  useEffect(() => {
+    if (selectedEmotion && DEFAULT_CONFIG[selectedEmotion]) {
+      setColor(DEFAULT_CONFIG[selectedEmotion].color);
+    }
+  }, [selectedEmotion]);  
 
   function parseColorString(colorString) {
     try {
@@ -73,13 +80,23 @@ export default function ManageEmotion() {
     try {
       const emotion = await fetchEmotionById(emotionId);
       console.log("Loaded emotion:", emotion);
-      setSelectedEmotion(emotion.emotion);
+  
+      if (DEFAULT_CONFIG[emotion.emotion]) {
+        // If the emotion is predefined, set it as the selected emotion
+        setSelectedEmotion(emotion.emotion);
+        setCustomEmotion(""); // Clear customEmotion since it's a predefined emotion
+      } else {
+        // If the emotion is custom, set it in customEmotion and clear selectedEmotion
+        setCustomEmotion(emotion.emotion);
+        setSelectedEmotion(null); // Clear selectedEmotion since it's custom
+      }
+  
       // Parse the color string back to RGB
       setColor(parseColorString(emotion.color));
     } catch (error) {
       console.error("Failed to load emotion data:", error);
     }
-  };
+  };  
 
   // Fix: Define handleColorChange
   const handleColorChange = (component, value) => {
@@ -99,7 +116,7 @@ export default function ManageEmotion() {
   
     if (isEditing) {
       try {
-        await updateEmotion(editedEmotionId, selectedEmotion, colorString);
+        await updateEmotion(editedEmotionId, emotionName, colorString);
         console.log("Emotion updated successfully");
         navigation.goBack();
       } catch (error) {
