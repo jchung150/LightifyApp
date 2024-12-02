@@ -17,6 +17,7 @@ export default function EmotionsList({ emotions, onEdit, onDelete }) {
         />
       )}
       keyExtractor={(item) => item.id.toString()}
+      contentContainerStyle={{ paddingBottom: 20 }}
     />
   );
 }

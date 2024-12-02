@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import EmotionsOutput from "../components/EmotionsOutput/EmotionsOutput";
-import { initializeDatabase, fetchEmotions, deleteEmotion } from "../src/database/database";
+import {
+  initializeDatabase,
+  fetchEmotions,
+  deleteEmotion,
+} from "../src/database/database";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { GlobalStyles } from "../constants/styles";
 
 export default function AllEmotions() {
   const [emotions, setEmotions] = useState([]);
@@ -59,7 +64,11 @@ export default function AllEmotions() {
   }
 
   return (
-    <EmotionsOutput emotions={emotions} onEdit={navigateToEdit} onDelete={handleDelete} />
+    <EmotionsOutput
+      emotions={emotions}
+      onEdit={navigateToEdit}
+      onDelete={handleDelete}
+    />
   );
 }
 
@@ -70,7 +79,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   emptyText: {
-    fontSize: 18,
-    color: "gray",
+    fontSize: 20,
+    color: GlobalStyles.colors.primary500,
+    fontWeight: "bold",
+    textAlign: "center",
+    padding: 16,
   },
 });

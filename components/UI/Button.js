@@ -4,7 +4,7 @@ import { GlobalStyles } from "../../constants/styles";
 
 export default function Button({ children, onPress, mode, style }) {
   return (
-    <View>
+    <View style={[styles.buttonContainer, style]}>
       <Pressable
         onPress={onPress}
         style={({ pressed }) => pressed && styles.pressed}
@@ -20,24 +20,33 @@ export default function Button({ children, onPress, mode, style }) {
 }
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    borderRadius: 8,
+    overflow: "hidden",
+  },
+  pressable: {
+    borderRadius: 8,
+  },
   button: {
-    borderRadius: 4,
-    padding: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     backgroundColor: GlobalStyles.colors.primary500,
+    alignItems: "center",
+    justifyContent: "center",
   },
   flat: {
     backgroundColor: "transparent",
   },
   buttonText: {
     color: "white",
-    textAlign: "center",
+    fontSize: 16,
+    fontWeight: "600",
   },
   flatText: {
     color: GlobalStyles.colors.primary200,
   },
   pressed: {
-    opacity: 0.75,
-    backgroundColor: GlobalStyles.colors.primary100,
-    borderRadius: 4,
+    opacity: 0.9,
+    backgroundColor: GlobalStyles.colors.primary400,
   },
 });

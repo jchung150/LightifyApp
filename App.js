@@ -20,7 +20,7 @@ function AllEmotionsStackScreen() {
   return (
     <AllEmotionsStack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
+        headerStyle: { backgroundColor: GlobalStyles.colors.primary800 },
         headerTintColor: "white",
       }}
     >
@@ -56,7 +56,7 @@ function EmotionsOverview() {
     <Tabs.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { backgroundColor: GlobalStyles.colors.primary500 },
+        tabBarStyle: { backgroundColor: GlobalStyles.colors.primary800 },
         tabBarActiveTintColor: GlobalStyles.colors.accent500,
       }}
     >

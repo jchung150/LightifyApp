@@ -5,8 +5,12 @@ import DropDownPicker from "react-native-dropdown-picker";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Slider from "@react-native-community/slider";
 import Button from "../components/UI/Button";
-import { addEmotion, updateEmotion, fetchEmotionById } from "../src/database/database";
-import { useRoute, useNavigation } from "@react-navigation/native"; 
+import {
+  addEmotion,
+  updateEmotion,
+  fetchEmotionById,
+} from "../src/database/database";
+import { useRoute, useNavigation } from "@react-navigation/native";
 
 const DEFAULT_CONFIG = {
   angry: { color: { r: 255, g: 0, b: 0 }, icon: "angry" },
@@ -36,7 +40,8 @@ export default function ManageEmotion() {
   console.log("Selected Emotion:", selectedEmotion);
   console.log("Color", color);
   console.log("Emotion ID:", editedEmotionId);
-  console.log("isEditing :", isEditing);useNavigation
+  console.log("isEditing :", isEditing);
+  useNavigation;
 
   useEffect(() => {
     if (isEditing) {
@@ -53,7 +58,7 @@ export default function ManageEmotion() {
     if (selectedEmotion && DEFAULT_CONFIG[selectedEmotion]) {
       setColor(DEFAULT_CONFIG[selectedEmotion].color);
     }
-  }, [selectedEmotion]);  
+  }, [selectedEmotion]);
 
   function parseColorString(colorString) {
     try {
@@ -62,7 +67,7 @@ export default function ManageEmotion() {
       if (!match) {
         throw new Error("Invalid color string format");
       }
-  
+
       // Convert the extracted numbers into an object
       const [, r, g, b] = match;
       return {
@@ -80,7 +85,7 @@ export default function ManageEmotion() {
     try {
       const emotion = await fetchEmotionById(emotionId);
       console.log("Loaded emotion:", emotion);
-  
+
       if (DEFAULT_CONFIG[emotion.emotion]) {
         // If the emotion is predefined, set it as the selected emotion
         setSelectedEmotion(emotion.emotion);
@@ -90,13 +95,13 @@ export default function ManageEmotion() {
         setCustomEmotion(emotion.emotion);
         setSelectedEmotion(null); // Clear selectedEmotion since it's custom
       }
-  
+
       // Parse the color string back to RGB
       setColor(parseColorString(emotion.color));
     } catch (error) {
       console.error("Failed to load emotion data:", error);
     }
-  };  
+  };
 
   // Fix: Define handleColorChange
   const handleColorChange = (component, value) => {
@@ -107,13 +112,13 @@ export default function ManageEmotion() {
     // Use customEmotion if it's not empty, otherwise use selectedEmotion
     const emotionName = customEmotion.trim() || selectedEmotion;
     const colorString = `rgb(${color.r}, ${color.g}, ${color.b})`;
-  
+
     console.log("========confirmHandler========");
     console.log("Navigation Params:", route.params);
     console.log("Selected Emotion:", selectedEmotion);
     console.log("Emotion ID:", editedEmotionId);
     console.log("isEditing :", isEditing);
-  
+
     if (isEditing) {
       try {
         await updateEmotion(editedEmotionId, emotionName, colorString);
