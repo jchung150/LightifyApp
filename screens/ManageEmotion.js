@@ -49,6 +49,12 @@ export default function ManageEmotion() {
     }
   }, [isEditing]);
 
+  useEffect(() => {
+    if (selectedEmotion && DEFAULT_CONFIG[selectedEmotion]) {
+      setColor(DEFAULT_CONFIG[selectedEmotion].color);
+    }
+  }, [selectedEmotion]);  
+
   function parseColorString(colorString) {
     try {
       // Extract numbers from the string "rgb(r, g, b)"
