@@ -44,18 +44,23 @@ export default function ManageEmotion() {
   useNavigation;
 
   useEffect(() => {
-    if (isEditing) {
-      // Fetch the existing emotion data using editedEmotionId
-      loadEmotionData(editedEmotionId);
-    } else {
-      // Initialize with default values for adding a new emotion
-      setSelectedEmotion("happy");
-      setColor(DEFAULT_CONFIG["happy"].color);
-    }
+    const initializeEmotionData = async () => {
+      if (isEditing) {
+        // Fetch the existing emotion data using `editedEmotionId`
+        await loadEmotionData(editedEmotionId);
+      } else {
+        // Initialize with default values for adding a new emotion
+        setSelectedEmotion("happy");
+        setColor(DEFAULT_CONFIG["happy"].color);
+      }
+    };
+  
+    initializeEmotionData();
   }, [isEditing]);
-
+  
   useEffect(() => {
-    if (selectedEmotion && DEFAULT_CONFIG[selectedEmotion]) {
+    if (!isEditing && selectedEmotion && DEFAULT_CONFIG[selectedEmotion]) {
+      // Only update the color if not editing an existing emotion
       setColor(DEFAULT_CONFIG[selectedEmotion].color);
     }
   }, [selectedEmotion]);
@@ -85,7 +90,7 @@ export default function ManageEmotion() {
     try {
       const emotion = await fetchEmotionById(emotionId);
       console.log("Loaded emotion:", emotion);
-
+  
       if (DEFAULT_CONFIG[emotion.emotion]) {
         // If the emotion is predefined, set it as the selected emotion
         setSelectedEmotion(emotion.emotion);
@@ -95,8 +100,8 @@ export default function ManageEmotion() {
         setCustomEmotion(emotion.emotion);
         setSelectedEmotion(null); // Clear selectedEmotion since it's custom
       }
-
-      // Parse the color string back to RGB
+  
+      // Parse the color string back to RGB and set it
       setColor(parseColorString(emotion.color));
     } catch (error) {
       console.error("Failed to load emotion data:", error);
