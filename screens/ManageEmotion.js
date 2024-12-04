@@ -1,6 +1,6 @@
 // ManageEmotion.js
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text, TextInput } from "react-native";
+import { Alert, View, StyleSheet, Text, TextInput } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Slider from "@react-native-community/slider";
@@ -9,6 +9,7 @@ import {
   addEmotion,
   updateEmotion,
   fetchEmotionById,
+  fetchEmotionByName,
 } from "../src/database/database";
 import { useRoute, useNavigation } from "@react-navigation/native";
 
@@ -123,6 +124,18 @@ export default function ManageEmotion() {
     console.log("Selected Emotion:", selectedEmotion);
     console.log("Emotion ID:", editedEmotionId);
     console.log("isEditing :", isEditing);
+
+    const existingEmotion = await fetchEmotionByName(emotionName);
+
+    if (existingEmotion && existingEmotion.id !== editedEmotionId) {
+      // Notify the user about the duplicate and navigate back to the list
+      Alert.alert(
+        "Emotion Already Exists",
+        "An emotion with this name already exists. Please edit the existing emotion."
+      );
+      navigation.goBack();
+      return;
+    }
 
     if (isEditing) {
       try {
