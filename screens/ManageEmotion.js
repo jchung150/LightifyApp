@@ -7,12 +7,13 @@ import Slider from "@react-native-community/slider";
 import Button from "../components/UI/Button";
 import {
   addEmotion,
+  deleteEmotion,
   updateEmotion,
   fetchEmotionById,
   fetchEmotionByName,
 } from "../src/database/database";
 import { useRoute, useNavigation } from "@react-navigation/native";
-
+import { GlobalStyles } from "../constants/styles";
 const DEFAULT_CONFIG = {
   angry: { color: { r: 255, g: 0, b: 0 }, icon: "angry" },
   happy: { color: { r: 0, g: 255, b: 0 }, icon: "smile" },
@@ -55,10 +56,10 @@ export default function ManageEmotion() {
         setColor(DEFAULT_CONFIG["happy"].color);
       }
     };
-  
+
     initializeEmotionData();
   }, [isEditing]);
-  
+
   useEffect(() => {
     if (!isEditing && selectedEmotion && DEFAULT_CONFIG[selectedEmotion]) {
       // Only update the color if not editing an existing emotion
@@ -91,7 +92,7 @@ export default function ManageEmotion() {
     try {
       const emotion = await fetchEmotionById(emotionId);
       console.log("Loaded emotion:", emotion);
-  
+
       if (DEFAULT_CONFIG[emotion.emotion]) {
         // If the emotion is predefined, set it as the selected emotion
         setSelectedEmotion(emotion.emotion);
@@ -101,7 +102,7 @@ export default function ManageEmotion() {
         setCustomEmotion(emotion.emotion);
         setSelectedEmotion(null); // Clear selectedEmotion since it's custom
       }
-  
+
       // Parse the color string back to RGB and set it
       setColor(parseColorString(emotion.color));
     } catch (error) {
@@ -156,6 +157,16 @@ export default function ManageEmotion() {
       } catch (error) {
         console.error("Error adding emotion:", error);
       }
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteEmotion(editedEmotionId);
+      console.log(`Emotion with ID ${editedEmotionId} deleted`);
+      navigation.goBack();
+    } catch (error) {
+      console.error("Failed to delete emotion:", error);
     }
   };
 
@@ -225,7 +236,20 @@ export default function ManageEmotion() {
         />
       </View>
       <View style={styles.buttons}>
-        <Button onPress={confirmHandler}>{isEditing ? "Update" : "Add"}</Button>
+        <Button onPress={confirmHandler} color={GlobalStyles.colors.primary500}>
+          {isEditing ? "Update" : "Add"}
+        </Button>
+        <Button
+          onPress={() => navigation.goBack()}
+          color={GlobalStyles.colors.gray500}
+        >
+          Cancel
+        </Button>
+        {isEditing ? (
+          <Button onPress={handleDelete} color={GlobalStyles.colors.error500}>
+            Delete
+          </Button>
+        ) : null}
       </View>
     </View>
   );
@@ -278,6 +302,8 @@ const styles = StyleSheet.create({
   },
   buttons: {
     marginTop: 16,
-    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 16,
   },
 });

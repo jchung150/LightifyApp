@@ -36,7 +36,7 @@ export async function fetchEmotions() {
   try {
     if (!db) {
       console.log("Database is not initialized. Initializing now...");
-      await initializeDatabase(); 
+      await initializeDatabase();
     }
 
     const rows = await db.getAllAsync("SELECT * FROM emotions");
@@ -112,10 +112,7 @@ export async function deleteEmotion(id) {
       await initializeDatabase();
     }
 
-    const result = await db.runAsync(
-      "DELETE FROM emotions WHERE id = ?",
-      [id]
-    );
+    const result = await db.runAsync("DELETE FROM emotions WHERE id = ?", [id]);
 
     if (result.changes > 0) {
       console.log("Deleted emotion with ID:", id);

@@ -1,52 +1,27 @@
-import { View, Text, Pressable } from "react-native";
-import { StyleSheet } from "react-native";
-import { GlobalStyles } from "../../constants/styles";
+import React from "react";
+import { TouchableOpacity, Text, StyleSheet } from "react-native";
 
-export default function Button({ children, onPress, mode, style }) {
+const Button = ({ onPress, children, color }) => {
   return (
-    <View style={[styles.buttonContainer, style]}>
-      <Pressable
-        onPress={onPress}
-        style={({ pressed }) => pressed && styles.pressed}
-      >
-        <View style={[styles.button, mode === "flat" && styles.flat]}>
-          <Text style={[styles.buttonText, mode === "flat" && styles.flatText]}>
-            {children}
-          </Text>
-        </View>
-      </Pressable>
-    </View>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.button, { backgroundColor: color }]}
+    >
+      <Text style={styles.text}>{children}</Text>
+    </TouchableOpacity>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  buttonContainer: {
-    borderRadius: 8,
-    overflow: "hidden",
-  },
-  pressable: {
-    borderRadius: 8,
-  },
   button: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    backgroundColor: GlobalStyles.colors.primary500,
+    padding: 10,
+    width: "25%",
+    borderRadius: 5,
     alignItems: "center",
-    justifyContent: "center",
   },
-  flat: {
-    backgroundColor: "transparent",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  flatText: {
-    color: GlobalStyles.colors.primary200,
-  },
-  pressed: {
-    opacity: 0.9,
-    backgroundColor: GlobalStyles.colors.primary400,
+  text: {
+    color: "#fff",
   },
 });
+
+export default Button;

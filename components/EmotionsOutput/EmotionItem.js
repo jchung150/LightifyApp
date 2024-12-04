@@ -1,5 +1,12 @@
 import React from "react";
-import { Text, View, StyleSheet, TouchableOpacity, Pressable } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Pressable,
+  Alert,
+} from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
 import { GlobalStyles } from "../../constants/styles";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -30,24 +37,29 @@ export default function EmotionItem({
       if (!match) {
         throw new Error("Invalid RGB format");
       }
-  
+
       const rgb = {
         r: parseInt(match[1], 10),
         g: parseInt(match[2], 10),
         b: parseInt(match[3], 10),
       };
-  
+
       // Convert the RGB values to a single integer using the Govee format
-      const rgbValue = ((rgb.r & 0xff) << 16) | ((rgb.g & 0xff) << 8) | (rgb.b & 0xff);
-  
+      const rgbValue =
+        ((rgb.r & 0xff) << 16) | ((rgb.g & 0xff) << 8) | (rgb.b & 0xff);
+
       console.log("Controlling light with RGB value:", rgbValue);
-  
+
       // Call the API with the RGB integer value
       await setGoveeLightColor(rgbValue);
-  
+
       console.log("Light updated successfully!");
     } catch (error) {
       console.error("Failed to update light color:", error);
+      Alert.alert(
+        "Connection Error",
+        "Failed to change the light color. Please check your Govee Smart Light connection and try again."
+      );
     }
   };
 
