@@ -152,4 +152,28 @@ export async function fetchEmotionById(id) {
   }
 }
 
+export async function fetchEmotionByName(emotion) {
+  try {
+    if (!db) {
+      console.log("DB not initialized. Initializing...");
+      await initializeDatabase();
+    }
+
+    const emotionData = await db.getFirstAsync(
+      "SELECT * FROM emotions WHERE emotion = ?",
+      [emotion]
+    );
+
+    if (emotionData) {
+      console.log("Fetched emotion by name:", emotionData);
+      return emotionData;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching emotion by name:", error);
+    throw error;
+  }
+}
+
 export default db;
