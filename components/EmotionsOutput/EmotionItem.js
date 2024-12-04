@@ -1,8 +1,9 @@
 import React from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, Pressable } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
 import { GlobalStyles } from "../../constants/styles";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { setGoveeLightColor } from "../../src/services/govee";
 
 export default function EmotionItem({
   id,
@@ -22,6 +23,34 @@ export default function EmotionItem({
     </TouchableOpacity>
   );
 
+  const handleControlSmartLight = async (colorString) => {
+    try {
+      // Parse RGB string to {r, g, b}
+      const match = colorString.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+      if (!match) {
+        throw new Error("Invalid RGB format");
+      }
+  
+      const rgb = {
+        r: parseInt(match[1], 10),
+        g: parseInt(match[2], 10),
+        b: parseInt(match[3], 10),
+      };
+  
+      // Convert the RGB values to a single integer using the Govee format
+      const rgbValue = ((rgb.r & 0xff) << 16) | ((rgb.g & 0xff) << 8) | (rgb.b & 0xff);
+  
+      console.log("Controlling light with RGB value:", rgbValue);
+  
+      // Call the API with the RGB integer value
+      await setGoveeLightColor(rgbValue);
+  
+      console.log("Light updated successfully!");
+    } catch (error) {
+      console.error("Failed to update light color:", error);
+    }
+  };
+
   return (
     <Swipeable renderRightActions={renderRightActions}>
       <TouchableOpacity
@@ -29,25 +58,21 @@ export default function EmotionItem({
         onPress={() => onPress(id)} // Trigger the edit functionality on press
         style={styles.emotionItem}
       >
-        <View style={styles.emotionContent}>
-          <FontAwesome5
-            name={icon}
-            size={30}
-            color={color}
-            style={[styles.icon, { backgroundColor: color }]}
-          />
-          <View style={styles.textContainer}>
-            <Text style={styles.emotion}>{emotion}</Text>
-            <Text style={styles.colorLabel}>{color}</Text>
-          </View>
-        </View>
-        {/* Add a color preview box */}
-        {/* <View
+        {/* Pressable color box for controlling the light */}
+        <Pressable
+          onPress={() => handleControlSmartLight(color)}
           style={[
-            styles.colorBox,
+            styles.icon,
             { backgroundColor: color }, // Dynamically set the background color
           ]}
-        /> */}
+        >
+          <FontAwesome5 name={icon} size={24} color="#fff" />
+        </Pressable>
+
+        <View style={styles.textContainer}>
+          <Text style={styles.emotion}>{emotion}</Text>
+          <Text style={styles.colorLabel}>{color}</Text>
+        </View>
       </TouchableOpacity>
     </Swipeable>
   );
@@ -59,7 +84,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     backgroundColor: GlobalStyles.colors.primary700,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     alignItems: "center",
     borderRadius: 6,
     elevation: 3,
@@ -68,38 +93,25 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 1, height: 1 },
     shadowOpacity: 0.4,
   },
-  emotionContent: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  textBase: {
-    color: GlobalStyles.colors.primary50,
+  textContainer: {
+    marginLeft: 16,
   },
   emotion: {
     fontSize: 18,
     fontWeight: "bold",
     color: GlobalStyles.colors.primary50,
   },
-  icon: {
-    width: 50, // Fixed size for consistency
-    height: 50, // Fixed size for consistency
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 12,
-    borderRadius: 6,
-    textAlign: "center",
-  },
   colorLabel: {
     fontSize: 14,
     color: GlobalStyles.colors.primary50,
   },
-  // colorBox: {
-  //   width: 50,
-  //   height: 50,
-  //   borderRadius: 10,
-  //   borderWidth: 1,
-  //   borderColor: GlobalStyles.colors.primary50,
-  // },
+  icon: {
+    width: 50, // Adjust size as needed
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 6,
+  },
   deleteButton: {
     justifyContent: "center",
     alignItems: "center",
