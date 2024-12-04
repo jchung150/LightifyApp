@@ -1,8 +1,7 @@
 import uuid from "react-native-uuid";
 import axios from "axios";
 
-const BASE_URL = "https://openapi.api.govee.com";
-//const BASE_URL = 'https://developer-api.govee.com/v1/'
+const BASE_URL = "https://openapi.api.govee.com/router/api/v1/";
 
 const GOVEE_API_KEY = process.env.GOVEE_API_KEY;
 const GOVEE_DEVICE_MODEL = process.env.GOVEE_DEVICE_MODEL;
@@ -12,8 +11,7 @@ const GOVEE_DEVICE_ID = process.env.GOVEE_DEVICE_ID;
 export async function fetchDevices() {
     try {
       const response = await axios.get(
-        'https://openapi.api.govee.com/router/api/v1/user/devices',
-        //'https://developer-api.govee.com/v1/devices',
+        `${BASE_URL}/user/devices`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -31,7 +29,6 @@ export async function fetchDevices() {
   }
 
   export async function setGoveeLightColor(rgb) {
-    //const rgbValue = ((rgb.r & 0xff) << 16) | ((rgb.g & 0xff) << 8) | (rgb.b & 0xff);
   
     const payload = {
       requestId: uuid.v4(),
@@ -48,7 +45,7 @@ export async function fetchDevices() {
   
     try {
       const response = await axios.post(
-        "https://openapi.api.govee.com/router/api/v1/device/control",
+        `${BASE_URL}/device/control`,
         payload,
         {
           headers: {
