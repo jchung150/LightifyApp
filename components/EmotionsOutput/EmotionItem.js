@@ -48,8 +48,6 @@ export default function EmotionItem({
       const rgbValue =
         ((rgb.r & 0xff) << 16) | ((rgb.g & 0xff) << 8) | (rgb.b & 0xff);
 
-      console.log("Controlling light with RGB value:", rgbValue);
-
       // Call the API with the RGB integer value
       await setGoveeLightColor(rgbValue);
 

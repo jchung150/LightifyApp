@@ -37,12 +37,6 @@ export default function ManageEmotion() {
   const [color, setColor] = useState(DEFAULT_CONFIG["happy"].color);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  console.log("========ManageEmotion========");
-  console.log("Received Params in :", route.params);
-  console.log("Selected Emotion:", selectedEmotion);
-  console.log("Color", color);
-  console.log("Emotion ID:", editedEmotionId);
-  console.log("isEditing :", isEditing);
   useNavigation;
 
   useEffect(() => {
@@ -119,12 +113,6 @@ export default function ManageEmotion() {
     // Use customEmotion if it's not empty, otherwise use selectedEmotion
     const emotionName = customEmotion.trim() || selectedEmotion;
     const colorString = `rgb(${color.r}, ${color.g}, ${color.b})`;
-
-    console.log("========confirmHandler========");
-    console.log("Navigation Params:", route.params);
-    console.log("Selected Emotion:", selectedEmotion);
-    console.log("Emotion ID:", editedEmotionId);
-    console.log("isEditing :", isEditing);
 
     const existingEmotion = await fetchEmotionByName(emotionName);
 

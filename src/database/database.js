@@ -1,4 +1,3 @@
-//database.js
 import * as SQLite from "expo-sqlite";
 
 let db = null;
@@ -40,7 +39,7 @@ export async function fetchEmotions() {
     }
 
     const rows = await db.getAllAsync("SELECT * FROM emotions");
-    console.log("Fetched emotions:", rows);
+
     return rows;
   } catch (error) {
     console.error("Error fetching emotions:", error);
@@ -54,42 +53,12 @@ export async function addEmotion(emotion, color) {
       "INSERT INTO emotions (emotion, color) VALUES (?, ?)",
       [emotion, color]
     );
-    console.log("Added emotion:", result.lastInsertRowId);
     return result.lastInsertRowId;
   } catch (error) {
     console.error("Error adding emotion:", error);
     throw error;
   }
 }
-
-/*Add an Emoiton Without Duplicate*/
-/*
-export async function addEmotion(emotion, color) {
-  try {
-    if (!db) {
-      console.log("DB not initialized. Initializing...");
-      await initializeDatabase();
-    }
-
-    // Prevent duplicate emotions by using `INSERT OR IGNORE`
-    const result = await db.runAsync(
-      "INSERT OR IGNORE INTO emotions (emotion, color) VALUES (?, ?)",
-      [emotion, color]
-    );
-
-    if (result.changes > 0) {
-      console.log("Added emotion:", result.lastInsertRowId);
-      return result.lastInsertRowId;
-    } else {
-      console.log("Emotion already exists:", emotion);
-      return null; // Emotion already exists
-    }
-  } catch (error) {
-    console.error("Error adding emotion:", error);
-    throw error;
-  }
-}
-*/
 
 export async function updateEmotion(id, emotion, color) {
   try {
