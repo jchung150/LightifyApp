@@ -17,22 +17,19 @@ export default function AllEmotions() {
     try {
       const updatedEmotions = await fetchEmotions();
       setEmotions(updatedEmotions);
-      console.log("Emotions refreshed:", updatedEmotions);
     } catch (error) {
       console.error("Failed to refresh emotions:", error);
     }
   };
 
-  // Load database and initial data
   useEffect(() => {
     async function loadEmotions() {
       await initializeDatabase();
-      await refreshEmotions(); // Load emotions initially
+      await refreshEmotions();
     }
     loadEmotions();
   }, []);
 
-  // Refresh emotions when the screen regains focus
   useFocusEffect(
     React.useCallback(() => {
       refreshEmotions();
@@ -58,7 +55,9 @@ export default function AllEmotions() {
   if (emotions.length === 0) {
     return (
       <View style={styles.emptyContainer}>
-        <Text style={styles.emptyText}>Add emotions to get started</Text>
+        <Text style={styles.emptyText}>
+          Add an emotion/theme{"\n"}to get started
+        </Text>
       </View>
     );
   }

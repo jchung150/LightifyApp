@@ -16,19 +16,16 @@ const About = () => {
         <Image source={require("../assets/icon.png")} style={styles.logo} />
         <Text style={styles.title}>About This App</Text>
         <Text style={styles.text}>
-          This application analyzes your emotions and provides insights based on
-          your mood. It also includes a variety of features, such as a color
-          picker and emotion tracking.
+          This application lets you choose from predefined emotions or create
+          your own emotion/theme. Once selected, you can pick a color to
+          represent it and light up the smart light bar with your chosen color,
+          setting the perfect mood in your room.
         </Text>
         <View style={styles.divider} />
 
         <Text style={styles.subtitle}>Key Features</Text>
-        <Text style={styles.text}>
-          ✔️ Emotion tracking with a visual color picker.
-        </Text>
-        <Text style={styles.text}>
-          ✔️ Sleek and intuitive design for daily use.
-        </Text>
+        <Text style={styles.text}>✔️ Customizable Emotions and Themes</Text>
+        <Text style={styles.text}>✔️ Mood Lighting Control</Text>
         <View style={styles.divider} />
 
         <Text style={styles.subtitle}>Developers</Text>
@@ -62,7 +59,7 @@ const styles = StyleSheet.create({
     height: 100,
     marginBottom: 20,
     borderRadius: 15,
-    marginTop: 20, // Added margin to push the logo down below the notch
+    marginTop: 20,
   },
   title: {
     fontSize: 26,

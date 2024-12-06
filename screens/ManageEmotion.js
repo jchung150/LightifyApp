@@ -1,4 +1,3 @@
-// ManageEmotion.js
 import React, { useState, useEffect } from "react";
 import { Alert, View, StyleSheet, Text, TextInput } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -14,27 +13,28 @@ import {
 } from "../src/database/database";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { GlobalStyles } from "../constants/styles";
+
 const DEFAULT_CONFIG = {
-  angry: { color: { r: 255, g: 0, b: 0 }, icon: "angry" },
-  happy: { color: { r: 0, g: 255, b: 0 }, icon: "smile" },
-  sad: { color: { r: 0, g: 0, b: 255 }, icon: "sad-tear" },
-  fear: { color: { r: 128, g: 0, b: 128 }, icon: "grimace" },
-  disgust: { color: { r: 139, g: 69, b: 19 }, icon: "grin-tongue" },
-  neutral: { color: { r: 128, g: 128, b: 128 }, icon: "meh" },
-  surprise: { color: { r: 255, g: 255, b: 0 }, icon: "surprise" },
+  Happy: { color: { r: 0, g: 255, b: 0 }, icon: "smile" },
+  Angry: { color: { r: 255, g: 0, b: 0 }, icon: "angry" },
+  Sad: { color: { r: 0, g: 0, b: 255 }, icon: "sad-tear" },
+  Fear: { color: { r: 128, g: 0, b: 128 }, icon: "grimace" },
+  Disgust: { color: { r: 139, g: 69, b: 19 }, icon: "grin-tongue" },
+  Neutral: { color: { r: 128, g: 128, b: 128 }, icon: "meh" },
+  Surprise: { color: { r: 255, g: 255, b: 0 }, icon: "surprise" },
 };
 
 export default function ManageEmotion() {
-  const route = useRoute(); // Use useRoute to get the route object
-  const navigation = useNavigation(); // Use useNavigation if needed
+  const route = useRoute();
+  const navigation = useNavigation();
 
   const routeParams = route.params || {};
   const editedEmotionId = routeParams.emotionId;
   const isEditing = editedEmotionId != null;
 
-  const [selectedEmotion, setSelectedEmotion] = useState("happy");
+  const [selectedEmotion, setSelectedEmotion] = useState("Happy");
   const [customEmotion, setCustomEmotion] = useState("");
-  const [color, setColor] = useState(DEFAULT_CONFIG["happy"].color);
+  const [color, setColor] = useState(DEFAULT_CONFIG["Happy"].color);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useNavigation;
@@ -42,12 +42,10 @@ export default function ManageEmotion() {
   useEffect(() => {
     const initializeEmotionData = async () => {
       if (isEditing) {
-        // Fetch the existing emotion data using `editedEmotionId`
         await loadEmotionData(editedEmotionId);
       } else {
-        // Initialize with default values for adding a new emotion
-        setSelectedEmotion("happy");
-        setColor(DEFAULT_CONFIG["happy"].color);
+        setSelectedEmotion("Happy");
+        setColor(DEFAULT_CONFIG["Happy"].color);
       }
     };
 
@@ -56,20 +54,16 @@ export default function ManageEmotion() {
 
   useEffect(() => {
     if (!isEditing && selectedEmotion && DEFAULT_CONFIG[selectedEmotion]) {
-      // Only update the color if not editing an existing emotion
       setColor(DEFAULT_CONFIG[selectedEmotion].color);
     }
   }, [selectedEmotion]);
 
   function parseColorString(colorString) {
     try {
-      // Extract numbers from the string "rgb(r, g, b)"
       const match = colorString.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
       if (!match) {
         throw new Error("Invalid color string format");
       }
-
-      // Convert the extracted numbers into an object
       const [, r, g, b] = match;
       return {
         r: parseInt(r, 10),
@@ -78,7 +72,7 @@ export default function ManageEmotion() {
       };
     } catch (error) {
       console.error("Error parsing color string:", error);
-      return { r: 0, g: 0, b: 0 }; // Default color in case of failure
+      return { r: 0, g: 0, b: 0 };
     }
   }
 
@@ -88,36 +82,29 @@ export default function ManageEmotion() {
       console.log("Loaded emotion:", emotion);
 
       if (DEFAULT_CONFIG[emotion.emotion]) {
-        // If the emotion is predefined, set it as the selected emotion
         setSelectedEmotion(emotion.emotion);
-        setCustomEmotion(""); // Clear customEmotion since it's a predefined emotion
+        setCustomEmotion("");
       } else {
-        // If the emotion is custom, set it in customEmotion and clear selectedEmotion
         setCustomEmotion(emotion.emotion);
-        setSelectedEmotion(null); // Clear selectedEmotion since it's custom
+        setSelectedEmotion(null);
       }
-
-      // Parse the color string back to RGB and set it
       setColor(parseColorString(emotion.color));
     } catch (error) {
       console.error("Failed to load emotion data:", error);
     }
   };
 
-  // Fix: Define handleColorChange
   const handleColorChange = (component, value) => {
     setColor((prevColor) => ({ ...prevColor, [component]: value }));
   };
 
   const confirmHandler = async () => {
-    // Use customEmotion if it's not empty, otherwise use selectedEmotion
     const emotionName = customEmotion.trim() || selectedEmotion;
     const colorString = `rgb(${color.r}, ${color.g}, ${color.b})`;
 
     const existingEmotion = await fetchEmotionByName(emotionName);
 
     if (existingEmotion && existingEmotion.id !== editedEmotionId) {
-      // Notify the user about the duplicate and navigate back to the list
       Alert.alert(
         "Emotion Already Exists",
         "An emotion with this name already exists. Please edit the existing emotion."
@@ -136,7 +123,6 @@ export default function ManageEmotion() {
       }
     } else {
       try {
-        // Changed this to emotionName, which can be custom or selected
         const result = await addEmotion(emotionName, colorString);
         if (result) {
           console.log("Emotion added successfully");
@@ -184,7 +170,7 @@ export default function ManageEmotion() {
       />
       <TextInput
         style={styles.textInput}
-        placeholder="Or enter a custom emotion"
+        placeholder="Enter a custom emotion/theme"
         value={customEmotion}
         onChangeText={setCustomEmotion}
       />

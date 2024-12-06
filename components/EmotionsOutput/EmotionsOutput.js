@@ -2,7 +2,6 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import EmotionsHeader from "./EmotionsHeader";
 import EmotionsList from "./EmotionsList";
-import { GlobalStyles } from "../../constants/styles";
 
 export default function EmotionsOutput({ emotions, onEdit, onDelete }) {
   return (

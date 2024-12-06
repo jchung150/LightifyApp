@@ -9,11 +9,9 @@ export async function initializeDatabase() {
   }
 
   try {
-    // Use openDatabaseAsync to create or open the database
     db = await SQLite.openDatabaseAsync("emotions.db");
     console.log("Database connection established");
 
-    // Use execAsync to create the table
     await db.execAsync(`
       PRAGMA journal_mode = WAL;
       CREATE TABLE IF NOT EXISTS emotions (
@@ -66,7 +64,6 @@ export async function updateEmotion(id, emotion, color) {
       "UPDATE emotions SET emotion = ?, color = ? WHERE id = ?",
       [emotion, color, id]
     );
-    console.log("Updated rows:", result.changes);
     return result.changes;
   } catch (error) {
     console.error("Error updating emotion:", error);
@@ -107,7 +104,6 @@ export async function fetchEmotionById(id) {
     );
 
     if (emotion) {
-      console.log("Fetched emotion by ID:", emotion);
       return emotion;
     } else {
       throw new Error("No emotion found with the given ID");

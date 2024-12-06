@@ -28,7 +28,7 @@ function AllEmotionsStackScreen() {
         name="AllEmotions"
         component={AllEmotions}
         options={({ navigation }) => ({
-          title: "Emotions",
+          title: "LIGHTIFY",
           headerRight: () => (
             <IconButton
               icon="plus"
@@ -44,7 +44,7 @@ function AllEmotionsStackScreen() {
         component={ManageEmotion}
         options={{
           presentation: "modal",
-          headerTitle: "Manage Emotion",
+          headerTitle: "Manage Colour",
         }}
       />
     </AllEmotionsStack.Navigator>

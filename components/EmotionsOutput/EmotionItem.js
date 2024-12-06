@@ -20,7 +20,6 @@ export default function EmotionItem({
   onPress,
   onDelete,
 }) {
-  // Render the delete button when swiping
   const renderRightActions = () => (
     <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(id)}>
       <View style={styles.deleteContent}>
@@ -32,7 +31,6 @@ export default function EmotionItem({
 
   const handleControlSmartLight = async (colorString) => {
     try {
-      // Parse RGB string to {r, g, b}
       const match = colorString.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
       if (!match) {
         throw new Error("Invalid RGB format");
@@ -44,11 +42,9 @@ export default function EmotionItem({
         b: parseInt(match[3], 10),
       };
 
-      // Convert the RGB values to a single integer using the Govee format
       const rgbValue =
         ((rgb.r & 0xff) << 16) | ((rgb.g & 0xff) << 8) | (rgb.b & 0xff);
 
-      // Call the API with the RGB integer value
       await setGoveeLightColor(rgbValue);
 
       console.log("Light updated successfully!");
@@ -65,16 +61,12 @@ export default function EmotionItem({
     <Swipeable renderRightActions={renderRightActions}>
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={() => onPress(id)} // Trigger the edit functionality on press
+        onPress={() => onPress(id)}
         style={styles.emotionItem}
       >
-        {/* Pressable color box for controlling the light */}
         <Pressable
           onPress={() => handleControlSmartLight(color)}
-          style={[
-            styles.icon,
-            { backgroundColor: color }, // Dynamically set the background color
-          ]}
+          style={[styles.icon, { backgroundColor: color }]}
         >
           <FontAwesome5 name={icon} size={24} color="#fff" />
         </Pressable>
@@ -116,7 +108,7 @@ const styles = StyleSheet.create({
     color: GlobalStyles.colors.primary50,
   },
   icon: {
-    width: 50, // Adjust size as needed
+    width: 50,
     height: 50,
     justifyContent: "center",
     alignItems: "center",
